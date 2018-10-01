@@ -62,8 +62,8 @@ func (a *Archive) Add(path, sourcePath string, progress ...ProgressFunc) error {
 		return errors.New("archive is not open")
 	}
 
-	if path == "." || path == "" {
-		path = "/"
+	if path == "." || path == "/" {
+		path = ""
 	}
 
 	progressFunc := func(path string, sourcePath string) bool { return true }
@@ -151,7 +151,7 @@ func (a *Archive) addDir(path, sourcePath string, progress ProgressFunc) error {
 		return err
 	}
 
-	if path != "/" {
+	if path != "" {
 		a.addFile(path+"/", sourcePath)
 	}
 	for _, fileInfo := range fileInfos {

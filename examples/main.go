@@ -48,7 +48,7 @@ func runCompress(args []string) {
 	a, _ := zip.CreateArchive(archive)
 	defer a.Close()
 
-	a.Add(".", path, func(path string, sourcePath string) bool {
+	a.Add("/", path, func(path string, sourcePath string) bool {
 		if path != "." && filepath.Base(path)[0] == '.' {
 			fmt.Println("> Ignore:", path)
 			return false

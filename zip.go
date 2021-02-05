@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 type ProgressFunc func(path string, sourcePath string) bool
@@ -71,7 +72,7 @@ func (a *Archive) Add(path, sourcePath string, progress ...ProgressFunc) error {
 		progressFunc = progress[0]
 	}
 
-	if !progressFunc(path, sourcePath) {
+	if !progressFunc(removeLeadingSlash(path), sourcePath) {
 		return nil
 	}
 
@@ -100,8 +101,7 @@ func (a *Archive) List() ([]string, error) {
 			return filenames, err
 		}
 		defer rc.Close()
-
-		filenames = append(filenames, f.Name)
+		filenames = append(filenames, removeLeadingSlash(f.Name))
 	}
 
 	return filenames, nil
@@ -194,4 +194,9 @@ func isDirectory(path string) bool {
 		return false
 	}
 	return fileInfo.IsDir()
+}
+
+func removeLeadingSlash(path string) string {
+	var re = regexp.MustCompile(`^/`)
+	return re.ReplaceAllString(path, "")
 }

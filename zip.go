@@ -11,6 +11,7 @@ import (
 	"regexp"
 )
 
+// ProgressFunc : Function to track progress and ignore specific files or directories.
 type ProgressFunc func(path string, sourcePath string) bool
 
 // Archive :
@@ -21,7 +22,7 @@ type Archive struct {
 	extractHandler func()
 }
 
-// CreateArchive :
+// CreateArchive creates a new zip archive at the given path.
 func CreateArchive(path string) (Archive, error) {
 	a := Archive{}
 
@@ -33,7 +34,7 @@ func CreateArchive(path string) (Archive, error) {
 	return a, nil
 }
 
-// OpenArchive :
+// OpenArchive opens an existing zip archive.
 func OpenArchive(path string) (Archive, error) {
 	a := Archive{}
 
@@ -45,7 +46,7 @@ func OpenArchive(path string) (Archive, error) {
 	return a, nil
 }
 
-// Close :
+// Close closes open files.
 func (a *Archive) Close() {
 
 	if a.writer != nil {
@@ -57,7 +58,8 @@ func (a *Archive) Close() {
 	}
 }
 
-// Add :
+// Add adds a file or directory recursively at the given path. Use `/` to add
+// something to the root of the archive.
 func (a *Archive) Add(path, sourcePath string, progress ...ProgressFunc) error {
 	if !a.isOpen() {
 		return errors.New("archive is not open")
@@ -83,7 +85,7 @@ func (a *Archive) Add(path, sourcePath string, progress ...ProgressFunc) error {
 	return a.addFile(path, sourcePath)
 }
 
-// List :
+// List returns an array of paths that the archive contains
 func (a *Archive) List() ([]string, error) {
 
 	var filenames []string
